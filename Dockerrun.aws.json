@@ -1,0 +1,43 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "mysql-data",
+      "host": {
+        "sourcePath": "/data/mysql"
+      }
+    }
+  ],
+  "containerDefinitions": [
+     {
+       "name": "nestjs-app",
+       "image": "475640161247.dkr.ecr.ap-northeast-2.amazonaws.com/nestjs-eb-multi-container-docker:latest",
+       "memory": 256,
+        "essential": true,
+        "portMappings": [
+          {
+            "hostPort": 80,
+            "containerPort": 8000
+          }
+        ]
+     },
+     {
+      "name": "db",
+      "image": "475640161247.dkr.ecr.ap-northeast-2.amazonaws.com/mysql:5.7",
+      "essential": true,
+      "memory": 256,
+      "environment": [
+        {
+          "name": "MYSQL_ROOT_PASSWORD",
+          "value": "rootpassword"
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "mysql-data",
+          "containerPath": "/var/lib/mysql"
+        }
+      ]
+    }
+  ]
+}
